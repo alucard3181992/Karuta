@@ -1,0 +1,29 @@
+{
+  "name": "karuta",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "axios": "^1.7.8",
+    "browser-image-compression": "^2.0.2",
+    "multer": "^1.4.5-lts.1",
+    "next": "15.0.3",
+    "pako": "^2.1.0",
+    "pg": "^8.13.1",
+    "primeflex": "^3.3.1",
+    "primeicons": "^6.0.1",
+    "primereact": "^10.2.1",
+    "react": "^18",
+    "react-dom": "^18",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "eslint": "^8",
+    "eslint-config-next": "15.0.3"
+  }
+}

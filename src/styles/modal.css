@@ -1,0 +1,266 @@
+.ArribaDerecha {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    background-color: #6200ea;
+    /* Color de la esquina */
+    clip-path: polygon(100% 0%, 100% 100%, 0% 0%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.AbajoDerecha {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    background-color: var(--highlight-bg);
+    /* Color de la esquina */
+    clip-path: polygon(100% 100%, 0% 100%, 100% 0%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.AbajoDerecha::before {
+    position: absolute;
+    top: 5px;
+    left: 30%;
+    content: "🖊️";
+}
+
+.ArribaDerecha2 {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60px;
+    height: 60px;
+    background-color: var(--highlight-bg);
+    /* Color de la esquina */
+    clip-path: polygon(100% 0%, 100% 100%, 0% 0%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.ArribaDerecha2::before {
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    content: "🖊️";
+}
+
+.AbajoDerecha2 {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 60px;
+    height: 60px;
+    background-color: var(--highlight-bg);
+    /* Color de la esquina */
+    clip-path: polygon(100% 100%, 0% 100%, 100% 0%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.AbajoDerecha2::before {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    content: "🔄";
+}
+
+.ContenedorKImg {
+    position: relative;
+    width: 150px;
+    height: 200px;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    overflow: hidden;
+    /* Asegura que la imagen no sobresalga */
+}
+
+.ContenedorKImg img {
+    border-radius: 4px;
+}
+
+.ContenedorKImg2 {
+    position: relative;
+    width: 100px;
+    height: 150px;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    overflow: hidden;
+    /* Asegura que la imagen no sobresalga */
+}
+
+.ContenedorKImg2 img {
+    border-radius: 4px;
+}
+
+/* Contenedor principal */
+.KarutaC-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    /* background: var(--surface-c); */
+    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Título */
+.KarutaC-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    color: #5e60ce;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    animation: fadeInDown 1s ease;
+}
+
+/* Switch personalizado */
+.KarutaC-switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    /* justify-content: center; */
+    width: 150px;
+    height: 50px;
+    background: #eeeeee;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.KarutaC-switch:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.KarutaC-switch.active {
+    background: #ffe4f3;
+}
+
+.KarutaC-indicator {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    position: absolute;
+    background: #4361ee;
+    transform: translateX(10px);
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.KarutaC-switch.active .KarutaC-indicator {
+    background: #f72585;
+    transform: translateX(50px);
+}
+
+/* Contenido */
+.KarutaC-content {
+    margin-top: 2rem;
+    width: 100%;
+    max-width: 1200px;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(150, 36, 36, 0.2);
+    background: var(--highlight-bg);
+}
+
+/* Animaciones de transición */
+/* .KarutaC-view-enter {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  
+  .KarutaC-view-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 500ms ease;
+  }
+  
+  .KarutaC-view-exit {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .KarutaC-view-exit-active {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 500ms ease;
+  } */
+/* Animaciones de transición */
+.KarutaC-view-enter {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.KarutaC-view-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 500ms ease, transform 500ms ease;
+}
+
+.KarutaC-view-exit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.KarutaC-view-exit-active {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 500ms ease, transform 500ms ease;
+}
+
+/* Animaciones generales */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.p-panel .p-panel-header {
+    border: 1px solid #0b213f;
+    padding: 1.25rem;
+    background: #071426;
+    color: rgba(255, 255, 255, 0.87);
+    border-radius: 6px !important;
+    border-top-right-radius: 6px;
+    border-top-left-radius: 6px;
+}
