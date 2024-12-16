@@ -3,6 +3,7 @@ import axios from "axios";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Image } from "primereact/image";
+import { Funciones } from "../Esqueleto/Funciones";
 
 const CreateAlbum = ({ setBloqueo, nuevaLista, mensajeFlotante }) => {
   const [name, setName] = useState("");
@@ -28,9 +29,9 @@ const CreateAlbum = ({ setBloqueo, nuevaLista, mensajeFlotante }) => {
         //console.log("Página añadida exitosamente:", response.data.page);
         setBloqueo(false);
         nuevaLista();
-        setBackgroundImage(null)
-        setBackgroundImageP(null)
-        setName("")
+        setBackgroundImage(null);
+        setBackgroundImageP(null);
+        setName("");
         mensajeFlotante(
           false,
           "info",
@@ -48,17 +49,19 @@ const CreateAlbum = ({ setBloqueo, nuevaLista, mensajeFlotante }) => {
   };
 
   const handlePaste = async (event) => {
-    console.log("MI LLAMAN");
     setBloqueo(true);
     const items = event.clipboardData.items;
     let men = "SI";
     for (const item of items) {
       if (item.type.startsWith("image/")) {
         const file = item.getAsFile();
-        //const formData = new FormData();
-        const url = URL.createObjectURL(file);
-        setBackgroundImage(file);
-        setBackgroundImageP(url);
+        Funciones.convertirWebPConTransparencia(file, 0.8, (convertedFile) => {
+          console.log("Archivo WebP listo:", convertedFile);
+          const url = URL.createObjectURL(convertedFile);
+          setBackgroundImage(convertedFile);
+          setBackgroundImageP(url);
+        });
+
         setBloqueo(false);
         men = "SI";
         //break;

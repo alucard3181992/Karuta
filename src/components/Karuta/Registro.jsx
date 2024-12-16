@@ -11,6 +11,7 @@ import WorkerForm from "./RegistrarTrabajo";
 import { Toast } from "primereact/toast";
 import { BlockUI } from "primereact/blockui";
 import axios from "axios";
+import { Funciones } from "../Esqueleto/Funciones";
 
 const RegisterCard = ({ modificar = false, texto = "" }) => {
   const [rawText, setRawText] = useState(texto);
@@ -70,9 +71,17 @@ const RegisterCard = ({ modificar = false, texto = "" }) => {
     for (const item of items) {
       if (item.type.startsWith("image/")) {
         const file = item.getAsFile();
-        const url = URL.createObjectURL(file);
-        setImageFile(file);
-        setImagePreview(url);
+        //const url = URL.createObjectURL(file);
+        // Convertir a WebP respetando la transparencia
+        Funciones.convertirWebPConTransparencia(file, 0.8, (convertedFile) => {
+          console.log("Archivo WebP listo:", convertedFile);
+
+          const url = URL.createObjectURL(convertedFile);
+          setImageFile(convertedFile);
+          setImagePreview(url);
+        });
+        /* setImageFile(file);
+        setImagePreview(url); */
         break;
       }
     }

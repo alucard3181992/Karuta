@@ -19,6 +19,7 @@ import axios from "axios";
 import KarutaEconomyUploader from "./CargarExcel";
 import { BlockUI } from "primereact/blockui";
 import { Toast } from "primereact/toast";
+import { Funciones } from "../Esqueleto/Funciones";
 
 export default function ViewCards({ Add = false, onCardSelected }) {
   const { karuta, eliminarIndividual, nuevaLista, cargar } =
@@ -185,7 +186,8 @@ export default function ViewCards({ Add = false, onCardSelected }) {
     };
 
     const [imagePreview, setImagePreview] = useState(null); // Estado para previsualizar la imagen
-    const handlePaste = async (event, code = true) => {
+
+    /* const handlePaste2 = async (event, code = true) => {
       setMen("Subiendo");
       setBloqueo(true);
       const items = event.clipboardData.items;
@@ -194,12 +196,16 @@ export default function ViewCards({ Add = false, onCardSelected }) {
         if (item.type.startsWith("image/")) {
           const file = item.getAsFile();
           const formData = new FormData();
-          const url = URL.createObjectURL(file);
-
-          code && setImagePreview(url);
-          formData.append("image", file);
+          Funciones.convertirWebPConTransparencia(
+            file,
+            0.8,
+            (convertedFile) => {
+              const url = URL.createObjectURL(convertedFile);
+              code && setImagePreview(url);
+              formData.append("image", convertedFile);
+            }
+          );
           formData.append("code", card.code); // El código de la carta
-
           try {
             const cardResponse = await axios.post(
               "/api/karuta/excel/imagen",
@@ -226,6 +232,15 @@ export default function ViewCards({ Add = false, onCardSelected }) {
                 "Imagen actualizada exitosamente.",
                 4000
               );
+            } else {
+              setBloqueo(false);
+              mensajeFlotante(
+                false,
+                "error",
+                "ERROR",
+                "Imagen no actualizada.",
+                4000
+              );
             }
           } catch (error) {
             setBloqueo(false);
@@ -244,7 +259,82 @@ export default function ViewCards({ Add = false, onCardSelected }) {
         setBloqueo(false);
         mensajeFlotante(false, "error", "INFO", "No es una Imagen", 4000);
       }
+    }; */
+    const handlePaste = async (event, code = true) => {
+      setMen("Subiendo");
+      setBloqueo(true);
+
+      const items = event.clipboardData.items;
+      let imagenEncontrada = false;
+
+      for (const item of items) {
+        if (item.type.startsWith("image/")) {
+          imagenEncontrada = true;
+          const file = item.getAsFile();
+          const formData = new FormData();
+
+          try {
+            // Convertir la imagen a WebP con transparencia
+            const convertedFile = await Funciones.convertirWebPConTransparenciaNOCALLBACK(
+              file,
+              0.8
+            );
+
+            const url = URL.createObjectURL(convertedFile);
+            code && setImagePreview(url);
+
+            // Crear el FormData
+            formData.append("image", convertedFile);
+            formData.append("code", card.code); // El código de la carta
+
+            // Enviar la imagen al endpoint
+            const response = await axios.post(
+              "/api/karuta/excel/imagen",
+              formData,
+              {
+                headers: { "Content-Type": "multipart/form-data" },
+              }
+            );
+
+            console.log("Imagen subida exitosamente:", response.data);
+
+            if (response.data.message === "Imagen actualizada exitosamente.") {
+              setBloqueo(false);
+              nuevaLista();
+              setImagePreview(null);
+              !code && handleImageUpdate(card.code);
+
+              mensajeFlotante(
+                false,
+                "info",
+                "ÉXITO",
+                "Imagen actualizada exitosamente.",
+                4000
+              );
+            } else {
+              throw new Error("Imagen no actualizada.");
+            }
+          } catch (error) {
+            console.error("Error al subir la imagen:", error);
+            mensajeFlotante(
+              false,
+              "error",
+              "ERROR",
+              "Error al subir la imagen.",
+              4000
+            );
+            setBloqueo(false);
+          }
+          break; // Sale del bucle si encuentra una imagen
+        }
+      }
+
+      if (!imagenEncontrada) {
+        setBloqueo(false);
+        mensajeFlotante(false, "error", "INFO", "No es una Imagen", 4000);
+      }
     };
+
     const handleCopy = () => {
       navigator.clipboard.writeText("kv " + card.code).then(() => {
         setCopied(true);
@@ -336,13 +426,15 @@ export default function ViewCards({ Add = false, onCardSelected }) {
               style={{ position: "relative" }}
             >
               <div className="ArribaDerecha" onClick={handleFlip}></div>
-              {!Add && <div
-                className="AbajoDerecha"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setModify(!modify);
-                }}
-              ></div>}
+              {!Add && (
+                <div
+                  className="AbajoDerecha"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setModify(!modify);
+                  }}
+                ></div>
+              )}
               <Dialog
                 header={"MODIFICAR"}
                 visible={modify}
@@ -517,7 +609,6 @@ export default function ViewCards({ Add = false, onCardSelected }) {
             blocked={bloqueo1}
             template={cargar("C", `Cargando...`)}
             fullScreen={true}
-            
           />
           {!Add && (
             <KarutaEconomyUploader

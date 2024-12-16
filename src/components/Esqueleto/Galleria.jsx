@@ -6,6 +6,7 @@ import { classNames } from "primereact/utils";
 import { Image } from "primereact/image";
 import axios from "axios";
 import { ConfirmDialog } from "primereact/confirmdialog";
+import { Funciones } from "./Funciones";
 
 export default function Galeria({
   images,
@@ -137,7 +138,7 @@ export default function Galeria({
     );
   };
 
-  const handlePaste = async (event, code) => {
+  const handlePaste2 = async (event, code) => {
     setBloqueo(true);
     const items = event.clipboardData.items;
     let men = "";
@@ -192,6 +193,74 @@ export default function Galeria({
       mensajeFlotante(false, "error", "EXITO", "No es una Imagen", 4000);
     }
   };
+
+  const handlePaste = async (event, code) => {
+    setBloqueo(true);
+
+    const items = event.clipboardData.items;
+    let imagenEncontrada = false;
+
+    for (const item of items) {
+      if (item.type.startsWith("image/")) {
+        imagenEncontrada = true;
+        const file = item.getAsFile();
+        const formData = new FormData();
+
+        try {
+          // Convertir la imagen a WebP con transparencia
+          const convertedFile =
+            await Funciones.convertirWebPConTransparenciaNOCALLBACK(file, 0.8);
+
+          // Crear el FormData
+          formData.append("image", convertedFile);
+          formData.append("code", code.name); // El código de la carta
+
+          // Enviar la imagen al endpoint
+          const response = await axios.post(
+            "/api/karuta/excel/imagen2",
+            formData,
+            {
+              headers: { "Content-Type": "multipart/form-data" },
+            }
+          );
+
+          console.log("Imagen subida exitosamente:", response.data);
+
+          if (response.data.message === "Imagen actualizada exitosamente.") {
+            setBloqueo(false);
+            nuevaLista();
+            handleImageUpdate(code.name);
+            mensajeFlotante(
+              false,
+              "info",
+              "ÉXITO",
+              "Imagen actualizada exitosamente.",
+              4000
+            );
+          } else {
+            throw new Error("Imagen no actualizada.");
+          }
+        } catch (error) {
+          console.error("Error al subir la imagen:", error);
+          mensajeFlotante(
+            false,
+            "error",
+            "ERROR",
+            "Error al subir la imagen.",
+            4000
+          );
+          setBloqueo(false);
+        }
+        break; // Sale del bucle si encuentra una imagen
+      }
+    }
+
+    if (!imagenEncontrada) {
+      setBloqueo(false);
+      mensajeFlotante(false, "error", "INFO", "No es una Imagen", 4000);
+    }
+  };
+
   const [imageUrls, setImageUrls] = useState({});
   const handleImageUpdate = (code) => {
     setImageUrls((prev) => ({

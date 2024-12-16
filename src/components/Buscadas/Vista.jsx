@@ -8,6 +8,7 @@ import axios from "axios";
 import { Panel } from "primereact/panel";
 import { Ripple } from "primereact/ripple";
 import ProductoSkeleton from "../Esqueleto/ProductoSkeleton";
+import { Funciones } from "../Esqueleto/Funciones";
 //import pako from "pako";
 
 const Buscadas = () => {
@@ -142,7 +143,7 @@ const Buscadas = () => {
         const file = item.getAsFile();
 
         // Convertir a WebP respetando la transparencia
-        convertirWebPConTransparencia(file, 0.8, (convertedFile) => {
+        Funciones.convertirWebPConTransparencia(file, 0.8, (convertedFile) => {
           console.log("Archivo WebP listo:", convertedFile);
 
           const url = URL.createObjectURL(convertedFile);
@@ -155,7 +156,7 @@ const Buscadas = () => {
     }
   };
 
-  const convertirWebPConTransparencia = (archivo, calidad, callback) => {
+  /* const convertirWebPConTransparencia = (archivo, calidad, callback) => {
     const misNombres = {};
     misNombres.Image = window.Image;
 
@@ -196,7 +197,7 @@ const Buscadas = () => {
       };
     };
   };
-
+ */
   // Fetch inicial de las cartas buscadas
   useEffect(() => {
     const fetchData = async () => {

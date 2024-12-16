@@ -233,6 +233,86 @@ export const Funciones = {
         }
 
         return hayCambios ? resultado : null;
-    }
+    },convertirWebPConTransparencia(archivo, calidad, callback) {
+        const misNombres = {};
+        misNombres.Image = window.Image;
+    
+        const img = new misNombres.Image();
+        const reader = new FileReader();
+    
+        reader.readAsDataURL(archivo);
+    
+        reader.onload = function (event) {
+          img.src = event.target.result;
+    
+          img.onload = function () {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+    
+            const ctx = canvas.getContext("2d", { alpha: true }); // Habilita el canal alfa
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Asegura un fondo transparente
+            ctx.drawImage(img, 0, 0);
+    
+            // Exportar a WebP respetando la transparencia
+            canvas.toBlob(
+              (blob) => {
+                const newImgFile = new File([blob], "convertedImage.webp", {
+                  type: "image/webp",
+                });
+    
+                /* console.log(
+                  "Tamaño de la imagen WebP:",
+                  (newImgFile.size / 1024).toFixed(2),
+                  "KB"
+                ); */
+                callback(newImgFile);
+              },
+              "image/webp",
+              calidad // Calidad de la imagen (0-1)
+            )
+          }
+        }
+      },convertirWebPConTransparenciaNOCALLBACK(archivo, calidad = 0.8) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          const reader = new FileReader();
+      
+          reader.readAsDataURL(archivo);
+      
+          reader.onload = (event) => {
+            img.src = event.target.result;
+      
+            img.onload = () => {
+              const canvas = document.createElement("canvas");
+              canvas.width = img.width;
+              canvas.height = img.height;
+      
+              const ctx = canvas.getContext("2d", { alpha: true });
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              ctx.drawImage(img, 0, 0);
+      
+              canvas.toBlob(
+                (blob) => {
+                  if (blob) {
+                    const newImgFile = new File([blob], "convertedImage.webp", {
+                      type: "image/webp",
+                    });
+                    resolve(newImgFile);
+                  } else {
+                    reject("Error al convertir la imagen a WebP.");
+                  }
+                },
+                "image/webp",
+                calidad
+              );
+            };
+          };
+      
+          reader.onerror = () => reject("Error al leer el archivo de imagen.");
+        });
+      }
+      
+    
 
 }
