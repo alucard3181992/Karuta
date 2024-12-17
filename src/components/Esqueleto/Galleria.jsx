@@ -45,7 +45,7 @@ export default function Galeria({
   ];
 
   useEffect(() => {
-    console.log("ME VUELVO A ARMAR");
+    //console.log("ME VUELVO A ARMAR");
     if (images.length !== 0) {
       //const newMar = productos2.filter((item) => item.base64 !== null);
       //setImages(productos2);
@@ -376,7 +376,6 @@ export default function Galeria({
   return (
     <React.Fragment>
       <div className="card">
-        <h2>Álbumes</h2>
         <div className="galleria-demo flex justify-content-center">
           <Galleria
             ref={galleria}

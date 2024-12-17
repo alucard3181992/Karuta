@@ -21,11 +21,16 @@ import { BlockUI } from "primereact/blockui";
 import { Toast } from "primereact/toast";
 import { Funciones } from "../Esqueleto/Funciones";
 
-export default function ViewCards({ Add = false, onCardSelected }) {
+export default function ViewCards({
+  Add = false,
+  onCardSelected,
+  codigos = [],
+}) {
   const { karuta, eliminarIndividual, nuevaLista, cargar } =
     useContext(KarutaContext);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [cards, setCards] = useState([]);
+  const [originalCards, setOriginalCards] = useState([]); // Lista base inmutable
   const [loading, setLoading] = useState(true);
   const toast = useRef(null);
   const [sortOptions, setSortOptions] = useState(null);
@@ -96,7 +101,7 @@ export default function ViewCards({ Add = false, onCardSelected }) {
     }
   };
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (karuta.length !== 0) {
       try {
         setCards(karuta);
@@ -110,6 +115,38 @@ export default function ViewCards({ Add = false, onCardSelected }) {
       //setBloqueo(false);
     } else {
       //setBloqueo(true);
+    }
+  }, [karuta]); */
+
+  useEffect(() => {
+    console.log("SOY VERSION 1.0");
+    if (karuta.length !== 0) {
+      try {
+        if (Add && codigos.length > 0) {
+          console.log("PRIMERO");
+          // Filtramos las cartas que NO están en la lista de "codigos"
+          const filteredCards = karuta.filter(
+            (card) => !codigos.includes(card.code)
+          );
+          setOriginalCards(filteredCards);
+          setCards(filteredCards);
+        } else {
+          console.log("PRIMERO IGUAL");
+          // Si Add es false o codigos está vacío, asignamos karuta directamente
+          setCards(karuta);
+          setOriginalCards(karuta);
+        }
+        setSortOptions(getSortOptions(karuta[0]));
+      } catch (error) {
+        console.error("Error al cargar las cartas:", error);
+      } finally {
+        console.log("SEGUNDO");
+        setLoading(false);
+      }
+    } else {
+      // Si karuta está vacío
+      setCards([]);
+      //setLoading(false);
     }
   }, [karuta]);
 
@@ -275,10 +312,11 @@ export default function ViewCards({ Add = false, onCardSelected }) {
 
           try {
             // Convertir la imagen a WebP con transparencia
-            const convertedFile = await Funciones.convertirWebPConTransparenciaNOCALLBACK(
-              file,
-              0.8
-            );
+            const convertedFile =
+              await Funciones.convertirWebPConTransparenciaNOCALLBACK(
+                file,
+                0.8
+              );
 
             const url = URL.createObjectURL(convertedFile);
             code && setImagePreview(url);
@@ -566,6 +604,8 @@ export default function ViewCards({ Add = false, onCardSelected }) {
   const closeAlbumModal = () => {
     setIsModalVisible(false);
   };
+  const cantidad = cards.length;
+
   const startContent = (
     <React.Fragment>
       <Button
@@ -577,7 +617,7 @@ export default function ViewCards({ Add = false, onCardSelected }) {
         }}
         className="p-2 m-0"
       ></Button>
-      <SearchBar products={karuta} onFilter={handleFilter} />
+      <SearchBar products={originalCards} onFilter={handleFilter} />
     </React.Fragment>
   );
 
@@ -594,13 +634,13 @@ export default function ViewCards({ Add = false, onCardSelected }) {
     </React.Fragment>
   );
   const header = () => {
-    return <Toolbar start={startContent} end={endContent} />;
+    return <Toolbar start={startContent} center={<p className="KarutaC-indicator" style={{transform:"translateX(0px)"}}>{cantidad} Cartas</p>} end={endContent} />;
   };
-  const cantidad = cards.length;
+
   return (
     <div className="">
       <Toast ref={toast} />
-      <h2>{cantidad} Cartas de Karuta </h2>
+
       {loading ? (
         <ProductoSkeleton />
       ) : (

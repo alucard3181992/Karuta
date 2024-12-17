@@ -26,6 +26,7 @@ const AlbumsPage = () => {
   const [selectedPage, setSelectedPage] = useState(1);
   const [bloqueo, setBloqueo] = useState(false); // Nuevo estado para manejar falta de datos
   const toast = useRef(null);
+  const [codigos, setCodigos] = useState([]); // Nuevo estado para manejar falta de datos
 
   /* useEffect(() => {
     const fetchAlbums = async () => {
@@ -74,6 +75,23 @@ const AlbumsPage = () => {
       const { data } = await axios.get(`/api/karuta/album/${album.id}/pages`);
       console.log("ME LLAMAN MIERDA", album.id);
       setSelectedAlbum({ ...album, pages: data });
+      const cardCodes = [];
+
+      // Recorre cada página del álbum
+      data.forEach((page) => {
+        // Recorre cada carta dentro de la página
+        page.cards.forEach((card) => {
+          // Agrega el card_code al array de resultados
+          cardCodes.push(card.card_code);
+        });
+      });
+      // Muestra los códigos extraídos
+      console.log("Códigos de cartas:", cardCodes);
+      setCodigos(cardCodes);
+      /* const albumCardCodes = data.pages.flatMap((page) =>
+        page.cards.map((card) => card.card_code)
+      );
+      console.log("LISTA DE CODIGOS", albumCardCodes); */
       setBloqueo(false);
       setIsModalVisible(true);
     } catch (error) {
@@ -409,7 +427,11 @@ const AlbumsPage = () => {
         style={{ width: "80vw" }}
         onHide={() => setShowCardPicker(false)}
       >
-        <ViewCards Add={true} onCardSelected={handleCardSelected} />
+        <ViewCards
+          Add={true}
+          onCardSelected={handleCardSelected}
+          codigos={codigos}
+        />
       </Dialog>
     </div>
   );
